@@ -1,0 +1,5 @@
+Project Name: Movie Pipeline Full-Stack AWS EKS Deployment
+Author: Abhinav Gangwar
+
+- GitHub Repository: https://github.com/AbhinavGangwar12/movie-picture-pipeline
+- Documentation / Notes: Deployed via GitHub Actions CI/CD to AWS EKS. (Infrastructure torn down post-verification).
