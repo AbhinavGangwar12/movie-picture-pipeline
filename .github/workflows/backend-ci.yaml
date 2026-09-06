@@ -1,0 +1,50 @@
+name: Backend Continuous Integration
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'starter/backend/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'starter/backend/**'
+
+defaults:
+  run:
+    working-directory: starter/backend
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Setup Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.6'
+          cache: 'pipenv'
+          cache-dependency-path: starter/backend/Pipfile.lock
+          
+      - name: Install Dependencies & Linter
+        run: |
+          pip install pipenv flake8
+          pipenv install --dev
+          
+      - name: Execute Linter
+        run: flake8 .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.6'
+          cache: 'pipenv'
+          cache-dependency-path: starter/backend/Pipfile.lock
+      - run: pip install pipenv
+      - run: pipenv install --dev
+      - run: pipenv run test
