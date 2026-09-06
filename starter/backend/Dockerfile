@@ -1,25 +1,29 @@
-FROM public.ecr.aws/docker/library/python:3.10-alpine
+FROM python:3.10-slim
 ENV FLASK_RUN_HOST=0.0.0.0
 
 WORKDIR /
-RUN adduser -u 1000 -D app
-RUN apk update && \
-  apk add \
-  pcre \
-  pcre-dev \
-  build-base \
-  gcc \
-  linux-headers \
-  openssl \
-  libffi-dev \
-  && pip install pipenv
 
-RUN mkdir -p /var/www/app && mkdir /app
+# 1. Create the user using Debian syntax
+RUN useradd -m -u 1000 app
 
-COPY Pipfile* /app
+# 2. Install build dependencies using apt-get instead of apk
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    libpcre3 \
+    libpcre3-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install pipenv
+
+# 3. Setup directories
+RUN mkdir -p /var/www/app && mkdir /app && chown -R app:app /var/www/app /app
+
+# 4. Install Pipenv dependencies
+COPY Pipfile* /app/
 RUN cd /app && pipenv install --system
 
-COPY . /app
+# 5. Copy the app
+COPY . /app/
 
-# The CMD is now formatted as a JSON array to fix the warning
+# 6. Start the server
 CMD ["uwsgi", "--http", ":5000", "--master", "--enable-threads", "-s", "/var/www/app/app.sock", "--manage-script-name", "--mount", "/=app:app"]
