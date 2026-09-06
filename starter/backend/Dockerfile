@@ -6,9 +6,10 @@ WORKDIR /
 # 1. Create the user using Debian syntax
 RUN useradd -m -u 1000 app
 
-# 2. Install build dependencies (Bullseye still supports libpcre3-dev)
-RUN apt-get update && \
-    apt-get install -y \
+
+# 2. Install build dependencies with --fix-missing to prevent 404 errors
+RUN apt-get update --fix-missing && \
+    apt-get install -y --fix-missing \
     build-essential \
     libpcre3 \
     libpcre3-dev \
