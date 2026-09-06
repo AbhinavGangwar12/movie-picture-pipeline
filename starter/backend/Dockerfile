@@ -1,20 +1,13 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.10
 ENV FLASK_RUN_HOST=0.0.0.0
 
 WORKDIR /
 
-# 1. Create the user using Debian syntax
+# 1. Create the user
 RUN useradd -m -u 1000 app
 
-
-# 2. Install build dependencies with --fix-missing to prevent 404 errors
-RUN apt-get update --fix-missing && \
-    apt-get install -y --fix-missing \
-    build-essential \
-    libpcre3 \
-    libpcre3-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip install pipenv
+# 2. Install pipenv (no apt-get needed, C-compilers are already in this image!)
+RUN pip install pipenv
 
 # 3. Setup directories
 RUN mkdir -p /var/www/app && mkdir /app && chown -R app:app /var/www/app /app
