@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10-slim-bullseye
 ENV FLASK_RUN_HOST=0.0.0.0
 
 WORKDIR /
@@ -6,7 +6,7 @@ WORKDIR /
 # 1. Create the user using Debian syntax
 RUN useradd -m -u 1000 app
 
-# 2. Install build dependencies using apt-get instead of apk
+# 2. Install build dependencies (Bullseye still supports libpcre3-dev)
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
