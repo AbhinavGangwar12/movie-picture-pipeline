@@ -27,7 +27,7 @@ jobs:
           pipenv install --dev
 
       - name: Run Linter
-        run: echo "Linting complete"
+        run: pipenv run lint
 
   test:
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
           pipenv install --dev
 
       - name: Run Tests
-        run: echo "Tests passed"
+        run: pipenv run test
 
   build:
     needs: [lint, test]
